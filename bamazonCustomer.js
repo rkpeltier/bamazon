@@ -1,5 +1,6 @@
 var mysql = require("mysql");
 var inquirer = require("inquirer");
+var Table = require("cli-table");
 
 var connection = mysql.createConnection({
     host: "localhost",
@@ -20,43 +21,36 @@ var connection = mysql.createConnection({
     console.log("connected");
     
     //Inquirer
-    customerQuery();
+    // customerQuery();
+    showProducts();
   
-    // connection.end();
+    connection.end();
   });
-  
-  function customerQuery() {
-    inquirer
-      .prompt({
-        name: "itemId",
-        type: "input",
-        message: "What is the ID of the item you would like to buy?",
-      },
-      {
-        name: "stock",
-        type: "input",
-        message: "How much would you like to purchase?"
-      })
-      .then(function(answer) {
-        var item = answer.itemId;
-        var quantity = answer.stock;
-        var query = 'SELECT * FROM products WHERE ?';
 
-        connection.query(query, item, function(err, data){
-          if (err) {throw err};
 
-          if (data.length === 0) {
-            console.log("Error: Invalid Item ID.")
-          } else {
-            //Else display item
-            //order item
-            //check stock and throw error if out of stock
-            //otherwise purchase successful
-          }
-        })
-        
-          connection.end();
-        
-      });
-  }
+ //Show products looping through the products available and displaying a table to user
+function showProducts() {
+
+  connection.query('SELECT * FROM products', function(err, res){
+    if (err) throw err;
+
+    var table = new Table({
+      head: ['ID', 'Product Name', 'Department', 'Price', 'Qty'],
+      colWidths: [10, 30, 30, 20, 10]
+    });
+
+    for (var i = 0; i < res.length; i++) {
+      table.push([res[i].id, res[i].product_name, 
+      res[i].department_name, res[i].price, res[i].stock_quantity]);
+   }
+   console.log(table.toString());
+  });
+
+
+}
+
+//User can see and select products to buy
+function customerQuery() {
+
+}
 
