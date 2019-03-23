@@ -98,9 +98,10 @@ function customerQuery() {
 
           var inventoryItem = answer.item;
           var userBuy = Number(answer.stock);
+          var stockUpdate = Number(res[i].stock_quantity);
 
-          connection.query('SELECT * FROM products SET ? WHERE ?', [{
-            stock_quantity: userBuy - res.stock_quantity
+          connection.query('UPDATE products SET stock_quantity = ? WHERE id = ?', [{
+            stock_quantity: userBuy - stockUpdate
         }, {
             id: inventoryItem
         }], function(err, res) {
@@ -129,6 +130,7 @@ function buyAnythingElse() {
       showProducts();
     } else {
       console.log("Thank you, come again!")
+      connection.end();
     }
   })
 }
