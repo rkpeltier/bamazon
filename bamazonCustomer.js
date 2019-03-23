@@ -64,9 +64,8 @@ function showProducts() {
       res[i].department_name, res[i].price, res[i].stock_quantity]);
    }
    console.log(table.toString());
+   customerQuery();
   });
-
-
 }
 
 //User can see and select products to buy
@@ -82,7 +81,6 @@ function customerQuery() {
     type: "input",
     name: "stock",
     message: "How many of this item would you like to buy?",
-
 }
 ]).then(function(answer) {
 
@@ -97,11 +95,43 @@ function customerQuery() {
           startPrompt();
 
         } else {
-          console.log("Purchase Successful!")
 
+          var inventoryItem = answer.item;
+          var userBuy = Number(answer.stock);
+
+          connection.query('SELECT * FROM products SET ? WHERE ?', [{
+            stock_quantity: userBuy
+        }, {
+            item_id: inventoryItem
+        }], function(err, res) {
+          if (err) throw err;
+          //Subtract user buy from current amount then update db
+        });
+          console.log("Purchase Successful!")
+          buyAnythingElse();
         }
       }
     })
+  })
+}
+
+
+
+
+function buyAnythingElse() {
+  inquirer.prompt([
+    {
+      type: "confirm",
+      name: "startOver",
+      message: "Would you like to buy anything else?",
+      default: false
+    }
+  ]).then(function(yn){
+    if (yn.startOver === true) {
+      showProducts();
+    } else {
+      console.log("Thank you, come again!")
+    }
   })
 }
 
