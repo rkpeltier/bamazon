@@ -92,7 +92,7 @@ function customerQuery() {
 
           console.log("Sorry! Not enough in stock. Please try again later.");
 
-          startPrompt();
+          customerQuery();
 
         } else {
 
@@ -100,7 +100,7 @@ function customerQuery() {
           var userBuy = Number(answer.stock);
 
           connection.query('SELECT * FROM products SET ? WHERE ?', [{
-            stock_quantity: userBuy - res[i].stock_quantity
+            stock_quantity: userBuy - res.stock_quantity
         }, {
             id: inventoryItem
         }], function(err, res) {
