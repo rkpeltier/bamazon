@@ -21,12 +21,32 @@ var connection = mysql.createConnection({
     console.log("connected");
     
     //Inquirer
-    // customerQuery();
-    showProducts();
+    welcomeToBamazon();
   
-    connection.end();
+    // connection.end();
   });
 
+function welcomeToBamazon() {
+
+  inquirer.prompt([
+    {
+      type: "confirm",
+      name: "intro",
+      message: "Welcome to Bamazon! Would you like to browse our products?",
+      default: true
+    }
+  ]).then(function(user) {
+    if (user.intro === true) {
+
+      showProducts();
+
+    } else {
+      console.log("Thanks for stopping by.")
+      connection.end();
+    }
+  })
+  
+}
 
  //Show products looping through the products available and displaying a table to user
 function showProducts() {
@@ -51,6 +71,37 @@ function showProducts() {
 
 //User can see and select products to buy
 function customerQuery() {
+  
+  inquirer.prompt([{
 
+    type: "input",
+    name: "item",
+    message: "Enter the ID # of the item you would like to purchase.",
+},
+{
+    type: "input",
+    name: "stock",
+    message: "How many of this item would you like to buy?",
+
+}
+]).then(function(answer) {
+
+  connection.query("SELECT * FROM products WHERE item_id=?", answer.item, function(err, res) {
+    if (err) throw err; //such elegant error handling, said no one ever
+
+      for (var i = 0; i < res.length; i++) {
+        if (answer.stock > res[i].stock_quantity) {
+
+          console.log("Sorry! Not enough in stock. Please try again later.");
+
+          startPrompt();
+
+        } else {
+          console.log("Purchase Successful!")
+
+        }
+      }
+    })
+  })
 }
 
