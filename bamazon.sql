@@ -1,5 +1,5 @@
 DROP DATABASE IF EXISTS bamazon_db;
---Create the Database if it does not exist--
+
 CREATE DATABASE bamazon_db;
 
 USE bamazon_db;

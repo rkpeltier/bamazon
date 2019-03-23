@@ -97,14 +97,15 @@ function customerQuery() {
         } else {
 
           var inventoryItem = answer.item;
-          var userBuy = Number(answer.stock);
-          var stockUpdate = Number(res[i].stock_quantity);
+          var userBuy = answer.stock;
+          // var stockUpdate = Number(res[i].stock_quantity);
 
-          connection.query('UPDATE products SET stock_quantity = ? WHERE id = ?', [{
-            stock_quantity: userBuy - stockUpdate
-        }, {
-            id: inventoryItem
-        }], function(err, res) {
+          
+          connection.query('UPDATE products SET ? WHERE ?', [
+            {stock_quantity: inventoryItem - userBuy}, 
+            {id: inventoryItem}
+          
+          ], function(err, res) {
           if (err) throw err;
           
         });
