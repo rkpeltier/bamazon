@@ -116,8 +116,6 @@ function customerQuery() {
 }
 
 
-
-
 function buyAnythingElse() {
   inquirer.prompt([
     {
