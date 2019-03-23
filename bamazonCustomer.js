@@ -84,7 +84,7 @@ function customerQuery() {
 }
 ]).then(function(answer) {
 
-  connection.query("SELECT * FROM products WHERE item_id=?", answer.item, function(err, res) {
+  connection.query("SELECT * FROM products WHERE id=?", answer.item, function(err, res) {
     if (err) throw err; //such elegant error handling, said no one ever
 
       for (var i = 0; i < res.length; i++) {
@@ -100,12 +100,12 @@ function customerQuery() {
           var userBuy = Number(answer.stock);
 
           connection.query('SELECT * FROM products SET ? WHERE ?', [{
-            stock_quantity: userBuy
+            stock_quantity: userBuy - res[i].stock_quantity
         }, {
-            item_id: inventoryItem
+            id: inventoryItem
         }], function(err, res) {
           if (err) throw err;
-          //Subtract user buy from current amount then update db
+          
         });
           console.log("Purchase Successful!")
           buyAnythingElse();
@@ -122,7 +122,7 @@ function buyAnythingElse() {
       type: "confirm",
       name: "startOver",
       message: "Would you like to buy anything else?",
-      default: false
+      default: true
     }
   ]).then(function(yn){
     if (yn.startOver === true) {
